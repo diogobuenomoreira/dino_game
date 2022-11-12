@@ -10,10 +10,14 @@
 
 #include <stdint.h>
 
+
 #define SIMULATE (1)
 
 #define LCD_SETCGRAMADDR 0x40
-
+#define DINO 	(0u)
+#define CACTUS 	(1u)
+#define BIRD	(2u)
+#define BLOCK 	(3u)
 //Declaracao das funcoes do LCD
 
 /********************************************************************/
@@ -29,6 +33,8 @@ void sendnibble(unsigned char dado);
 void LCDChar (unsigned char dado);
 void delayLCD (void);
 void createChar(uint8_t, unsigned char[]);
+void RandChar(void);
+void DisplayStartScreen(void);
 
 
 

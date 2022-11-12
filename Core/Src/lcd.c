@@ -6,7 +6,8 @@
  */
 #include "lcd.h"
 #include "stm32f1xx_hal.h"
-#include <stdint.h>
+#include <stdlib.h>
+
 
 /********************************************************************/
 /*  FUNCOES CONTROLE DE DISPLAY LCD 16X2                            */
@@ -235,6 +236,43 @@ void createChar(uint8_t location, unsigned char charmap[]) {
   }
 }
 
+void RandChar(void){
+
+	uint8_t lowerLimit = 3, upperLimit = 14;
+	uint8_t col = 0, ch = 0;
+
+	srand(HAL_GetTick()); // Seed
+
+	col =  lowerLimit + rand() % (upperLimit - lowerLimit);
+	LCDCursorPos(col, 2);
+
+	lowerLimit = 1;
+	upperLimit = 4;
+
+	ch =  lowerLimit + rand() % (upperLimit - lowerLimit);
+	LCDChar(ch);
+}
+
+void DisplayStartScreen(void) {
+
+	char InitMsg [] = "Dino Game...";
+
+	LCDCursorPos(1,1);
+	LCDPrintStr(InitMsg);
+
+	LCDCursorPos(1, 2);
+	LCDChar(BLOCK);
+
+	LCDCursorPos(15, 2);
+	LCDChar(BLOCK);
+
+	LCDCursorPos(2, 2);
+	LCDChar(DINO);
+
+	RandChar();
+	RandChar();
+	RandChar();
+}
 
 /********************************************************************/
 /********************************************************************/

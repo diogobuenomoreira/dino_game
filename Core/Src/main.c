@@ -89,14 +89,13 @@ int main(void)
   LCDCursorMode(0);
 
   // create a new character
-  createChar(0, dino); // create dino
-  createChar(1, cacti); // create cactus
+  createChar(DINO, dino); // create dino
+  createChar(CACTUS, cacti); // create cactus
+  createChar(BIRD, bird); // create cactus
+  createChar(BLOCK, block); // create cactus
 
-  LCDCursorPos(1,2);
-  LCDChar(0); // print dino
-
-  LCDCursorPos(5,2);
-  LCDChar(1); // print cactus
+  DisplayStartScreen();
+  HAL_Delay(1000);
 
   /* USER CODE END 2 */
 
