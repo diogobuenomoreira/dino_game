@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#define SIMULATE (1)
+#define SIMULATE (0)
 
 #define LCD_SETCGRAMADDR 0x40
 
