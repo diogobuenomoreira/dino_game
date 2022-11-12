@@ -21,7 +21,8 @@
 #include "main.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
+//#include "lcd.h"
+#include "LiquidCrystal.h"
 #include "bitmaps.h"
 /* USER CODE END Includes */
 
@@ -47,7 +48,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -64,7 +64,7 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	//char msg[] = "HELLO WORLD!";
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -84,21 +84,49 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  //MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  InitLCD();
-  LCDCursorMode(1);
+  // initialize the library by associating any needed LCD interface pin
+#if SIMULATE
+
+  LiquidCrystal(GPIOB, GPIO_PIN_6, GPIO_PIN_14, GPIO_PIN_5, GPIO_PIN_4, GPIO_PIN_3, GPIO_PIN_1, GPIO_PIN_0);
+
+#else
+
+  LiquidCrystal(GPIOB, GPIO_PIN_4, GPIO_PIN_14, GPIO_PIN_3, GPIO_PIN_5, GPIO_PIN_6, GPIO_PIN_7, GPIO_PIN_8);
+
+#endif
+
+  // create a new character
+   createChar(0, dino);
+   // create a new character
+   createChar(1, cacti);
+   // create a new character
+   createChar(2, bird);
+   // create a new character
+   createChar(3, block);
+
+   // Print a message to the lcd.
+   setCursor(1, 1); // This line is vital. You should set the cursor after you createChar.
+   write(0); //dino
+
+   setCursor(2, 1);
+   write(1); // cactus
+
+   setCursor(3, 1);
+   write(2); // bird
+
+   setCursor(4, 1);
+   write(3); // block
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  LCDCursorPos(1,1);
-	  LCDPrintXYStr(1, 1, (char*)dino);
-	  //LCDPrintStr(msg);
 
-	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -141,33 +169,6 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
-                          |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PB3 PB4 PB5 PB6
-                           PB7 PB8 PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
-                          |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-}
 
 /* USER CODE BEGIN 4 */
 

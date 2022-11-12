@@ -6,6 +6,7 @@
  */
 #include "lcd.h"
 #include "stm32f1xx_hal.h"
+#include <stdint.h>
 
 /********************************************************************/
 /*  FUNCOES CONTROLE DE DISPLAY LCD 16X2                            */
@@ -35,12 +36,26 @@
 
 
 //display LCD
+#ifndef SIMULATE
+
 #define LCD_D0  GPIO_PIN_5		//D0 = D4
 #define LCD_D1  GPIO_PIN_6		//D1 = D5
 #define LCD_D2  GPIO_PIN_7		//D2 = D6
 #define LCD_D3  GPIO_PIN_8		//D3 = D7
 #define LCD_RS  GPIO_PIN_3
 #define LCD_EN  GPIO_PIN_4
+
+#else
+
+#define LCD_D0  GPIO_PIN_4		//D0 = D4
+#define LCD_D1  GPIO_PIN_3		//D1 = D5
+#define LCD_D2  GPIO_PIN_1		//D2 = D6
+#define LCD_D3  GPIO_PIN_0		//D3 = D7
+#define LCD_RS  GPIO_PIN_6
+#define LCD_EN  GPIO_PIN_5
+
+#endif
+
 #define LCD_EN_ON       HAL_GPIO_WritePin(GPIOB,LCD_EN,1)
 #define LCD_EN_OFF      HAL_GPIO_WritePin(GPIOB,LCD_EN,0)
 #define LCD_RS_ON       HAL_GPIO_WritePin(GPIOB,LCD_RS,1)
@@ -100,6 +115,10 @@ void InitLCD (void)
   delayLCD();
   LCDCmd(0x01);
   delayLCD();
+   //Transaction end
+  //dispSend(0x48, command); //Same thing, but for 0x01
+  //for(i=0; i<8; i++) dispSend(cact[i], write);
+  //dispSend(0x80, command);
 }
 /********************************************************************/
 /*******************ATRASO PARA CONFIGURAR O DISPLAY*****************/
@@ -129,11 +148,11 @@ void LCDPrintXYStr (unsigned char x, unsigned char y, char *dado)
 /*******************ENVIA UMA MENSAGEM AO DISPLAY********************/
 void LCDPrintStr (char *dado)
 {
-  while (*dado != 0)
-  {
-    LCDChar(*dado);
-    dado++;
-  }
+	while (*dado != 0)
+	{
+		LCDChar(*dado);
+		dado++;
+	}
 }
 /********************************************************************/
 /*****************ENVIA UM INTEIRO PARA O DISPLAY********************/

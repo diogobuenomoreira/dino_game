@@ -8,6 +8,8 @@
 #ifndef SRC_LCD_H_
 #define SRC_LCD_H_
 
+#define SIMULATE
+
 //Declaracao das funcoes do LCD
 
 /********************************************************************/
