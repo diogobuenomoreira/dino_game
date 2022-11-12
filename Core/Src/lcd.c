@@ -35,12 +35,26 @@
 
 
 //display LCD
+#if SIMULATE
+
+#define LCD_D0  GPIO_PIN_4		//D0 = D4
+#define LCD_D1  GPIO_PIN_3		//D1 = D5
+#define LCD_D2  GPIO_PIN_1		//D2 = D6
+#define LCD_D3  GPIO_PIN_0		//D3 = D7
+#define LCD_RS  GPIO_PIN_6
+#define LCD_EN  GPIO_PIN_5
+
+#else
+
 #define LCD_D0  GPIO_PIN_5		//D0 = D4
 #define LCD_D1  GPIO_PIN_6		//D1 = D5
 #define LCD_D2  GPIO_PIN_7		//D2 = D6
 #define LCD_D3  GPIO_PIN_8		//D3 = D7
 #define LCD_RS  GPIO_PIN_3
 #define LCD_EN  GPIO_PIN_4
+
+#endif
+
 #define LCD_EN_ON       HAL_GPIO_WritePin(GPIOB,LCD_EN,1)
 #define LCD_EN_OFF      HAL_GPIO_WritePin(GPIOB,LCD_EN,0)
 #define LCD_RS_ON       HAL_GPIO_WritePin(GPIOB,LCD_RS,1)
@@ -173,7 +187,7 @@ void LCDChar (unsigned char dado)
 }
 /********************************************************************/
 /**********************ENVIA UM COMANDO AO DISPLAY**********************/
-void LCD (unsigned char dado)
+void LCD(unsigned char dado)
 {
   LCD_RS_ON;
   sendnibble(dado>>4);
@@ -188,11 +202,11 @@ void LCDCursorMode (unsigned char modo)
 }
 /********************************************************************/
 /**********************ESCOLHE POSICAO CURSOR **********************/
-void LCDCursorPos (unsigned char x,unsigned char y)
+void LCDCursorPos (unsigned char col,unsigned char row)
 {
   unsigned char pos;
-  pos=x-1;
-  if (y==1)
+  pos=col-1;
+  if (row==1)
   {
     pos=pos+0x80;
     LCDCmd(pos);
@@ -203,6 +217,19 @@ void LCDCursorPos (unsigned char x,unsigned char y)
     LCDCmd(pos);
   }
 }
+
+
+// Allows us to fill the first 8 CGRAM locations
+// with custom characters
+void createChar(uint8_t location, unsigned char charmap[]) {
+  location &= 0x7; // we only have 8 locations 0-7
+  LCDCmd(LCD_SETCGRAMADDR | (location << 3));
+  for (int i=0; i<8; i++) {
+	 LCDChar(charmap[i]);
+  }
+}
+
+
 /********************************************************************/
 /********************************************************************/
 

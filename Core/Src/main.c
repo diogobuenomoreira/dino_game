@@ -64,7 +64,7 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	char msg[] = "HELLO WORLD!";
+	//char msg[] = "HELLO WORLD!";
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -88,17 +88,28 @@ int main(void)
   /* USER CODE BEGIN 2 */
   InitLCD();
   LCDCursorMode(0);
+
+  // create a new character
+  createChar(0, dino); // create dino
+  createChar(1, cacti); // create cactus
+
+  LCDCursorPos(1,2);
+  LCDChar(0); // print dino
+
+  LCDCursorPos(5,2);
+  LCDChar(1); // print cactus
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  LCDCursorPos(1,1);
+	 // LCDCursorPos(1,1);
 	 // LCDPrintXYStr(1, 1, (char*)dino);
-	  LCDPrintStr(msg);
+	 // LCDPrintStr(msg);
 
-	  HAL_Delay(1000);
+	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -154,6 +165,16 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+#if SIMULATE
+
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_9, GPIO_PIN_RESET);
+
+    /*Configure GPIO pins : PB3 PB4 PB5 PB6
+                             PB7 PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_9;
+
+#else
+
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
                           |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
@@ -162,6 +183,9 @@ static void MX_GPIO_Init(void)
                            PB7 PB8 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
                           |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
+
+#endif
+
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
