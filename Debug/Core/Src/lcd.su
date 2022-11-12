@@ -11,5 +11,6 @@
 ../Core/Src/lcd.c:205:6:LCDCursorMode	16	static
 ../Core/Src/lcd.c:212:6:LCDCursorPos	24	static
 ../Core/Src/lcd.c:231:6:createChar	24	static
-../Core/Src/lcd.c:239:6:RandChar	16	static
-../Core/Src/lcd.c:256:6:DisplayStartScreen	32	static
+../Core/Src/lcd.c:239:6:LCDClear	8	static
+../Core/Src/lcd.c:245:6:RandChar	16	static
+../Core/Src/lcd.c:262:6:DisplayStartScreen	32	static

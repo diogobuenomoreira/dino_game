@@ -95,7 +95,8 @@ int main(void)
   createChar(BLOCK, block); // create cactus
 
   DisplayStartScreen();
-  HAL_Delay(1000);
+  HAL_Delay(3000);
+  LCDClear();
 
   /* USER CODE END 2 */
 

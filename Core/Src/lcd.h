@@ -14,6 +14,8 @@
 #define SIMULATE (1)
 
 #define LCD_SETCGRAMADDR 0x40
+#define LCD_CLEARDISPLAY 0x01
+
 #define DINO 	(0u)
 #define CACTUS 	(1u)
 #define BIRD	(2u)
@@ -33,8 +35,10 @@ void sendnibble(unsigned char dado);
 void LCDChar (unsigned char dado);
 void delayLCD (void);
 void createChar(uint8_t, unsigned char[]);
+void LCDClear(void);
 void RandChar(void);
 void DisplayStartScreen(void);
+
 
 
 

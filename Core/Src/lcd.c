@@ -236,6 +236,12 @@ void createChar(uint8_t location, unsigned char charmap[]) {
   }
 }
 
+void LCDClear(void){
+
+	LCDCmd(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
+	HAL_Delay(2);
+}
+
 void RandChar(void){
 
 	uint8_t lowerLimit = 3, upperLimit = 14;
