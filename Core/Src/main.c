@@ -64,7 +64,7 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	//char msg[] = "HELLO WORLD!";
+	char msg[] = "HELLO WORLD!";
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,7 +87,7 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
   InitLCD();
-  LCDCursorMode(1);
+  LCDCursorMode(0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -95,8 +95,8 @@ int main(void)
   while (1)
   {
 	  LCDCursorPos(1,1);
-	  LCDPrintXYStr(1, 1, (char*)dino);
-	  //LCDPrintStr(msg);
+	 // LCDPrintXYStr(1, 1, (char*)dino);
+	  LCDPrintStr(msg);
 
 	  HAL_Delay(1000);
     /* USER CODE END WHILE */

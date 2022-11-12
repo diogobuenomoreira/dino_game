@@ -10,6 +10,8 @@
 
 //Declaracao das funcoes do LCD
 
+#define SIMULATE (1)
+
 /********************************************************************/
 void LCDCmd (unsigned char cmd);
 void InitLCD (void);
