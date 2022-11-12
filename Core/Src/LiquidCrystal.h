@@ -10,7 +10,7 @@
 #ifndef LiquidCrystal_h
 #define LiquidCrystal_h
 
-#define SIMULATE	(1)
+#define SIMULATE	(0)
 
 // commands
 #define LCD_CLEARDISPLAY 0x01

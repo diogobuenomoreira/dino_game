@@ -2,3 +2,5 @@
 *.d
 *.su
 Debug/
+/Debug
+*.elf
