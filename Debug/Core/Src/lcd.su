@@ -14,3 +14,7 @@
 ../Core/Src/lcd.c:239:6:LCDClear	8	static
 ../Core/Src/lcd.c:245:6:RandChar	16	static
 ../Core/Src/lcd.c:262:6:DisplayStartScreen	32	static
+../Core/Src/lcd.c:283:6:UpdateLcd	24	static
+../Core/Src/lcd.c:294:6:PrintScore	16	static
+../Core/Src/lcd.c:303:6:DrawBlock	16	static
+../Core/Src/lcd.c:310:6:ShowCrashScreen	16	static

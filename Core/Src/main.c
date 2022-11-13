@@ -23,6 +23,10 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "bitmaps.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+static volatile bool buttonPressed = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -53,6 +58,17 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin: Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == GPIO_PIN_5){
+	  buttonPressed = true;
+  }
+}
 
 /* USER CODE END 0 */
 
@@ -63,6 +79,15 @@ static void MX_GPIO_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+   byte runnerArea[16] = {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+   byte jump = 0;
+   uint32_t currentMillisOb = 0, jumpTime = 0, previousMillis = 0;
+   unsigned int score = 0, bestScore = 0;
+   static bool freeze_score = false;
+   const uint16_t speedOfScroller = 300;
+   const uint16_t jumpLength = 500;
+   uint8_t count = 0;
 
   /* USER CODE END 1 */
 
@@ -90,9 +115,9 @@ int main(void)
 
   // create a new character
   createChar(DINO, dino); // create dino
-  createChar(CACTUS, cacti); // create cactus
-  createChar(BIRD, bird); // create cactus
-  createChar(BLOCK, block); // create cactus
+  createChar(CACTUS, cactus); // create cactus
+  createChar(BIRD, bird); // create bird
+  createChar(BLOCK, block); // create block
 
   DisplayStartScreen();
   HAL_Delay(3000);
@@ -104,6 +129,68 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  	count++;
+	  	count = count % 15;
+	   	currentMillisOb = HAL_GetTick();
+		if (currentMillisOb - previousMillis >= speedOfScroller)
+		{
+			  previousMillis = currentMillisOb;
+
+			  switch(count){
+			  	  case CACTUS:
+			  		  runnerArea[15] = CACTUS;
+			  		  break;
+			  	  case BIRD:
+			  		  runnerArea[15] = BIRD;
+			  		  break;
+			  	  case BLOCK:
+			  		  runnerArea[15] = BLOCK;
+			  		  break;
+			  	  default:
+			  		  runnerArea[15] = SPACE;
+			  		  break;
+			  }
+			  for (uint8_t i = 0; i <= 15; i++) {
+				runnerArea[i] = runnerArea[i + 1];
+			  }
+			  if (freeze_score == false) {
+				score++;
+			  }
+		}
+
+		if(buttonPressed == true)
+		{
+			  if ((runnerArea[1] != SPACE) && (runnerArea[1] != CACTUS || runnerArea[1] != BIRD)) {
+				runnerArea[1] = SPACE;
+			  }
+			  jump = DINO;
+			  freeze_score = true;
+			  jumpTime = HAL_GetTick();
+			  buttonPressed = false;
+#if SIMULATE
+			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+#endif
+		}
+		if ((HAL_GetTick() - jumpTime) >= jumpLength)
+		{
+			  if ((runnerArea[1] == SPACE) || (runnerArea[1] == DINO)) {
+				runnerArea[1] = DINO;
+				jump = SPACE;
+				freeze_score = false;
+			  }
+			  else {
+				  buttonPressed = true;//false;
+				  ShowCrashScreen(score, &bestScore);
+				  while(buttonPressed == false);// Keep in loop until button is pressed again
+				  memset(runnerArea, SPACE, sizeof(runnerArea));// clear runner area
+				  jump = SPACE;
+				  score = 0;
+			  }
+		}
+
+		UpdateLcd(runnerArea, jump);
+		PrintScore(score);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -161,11 +248,26 @@ static void MX_GPIO_Init(void)
 
 #if SIMULATE
 
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_9, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 
     /*Configure GPIO pins : PB3 PB4 PB5 PB6
                              PB7 PB8 PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_9;
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_0|GPIO_PIN_1;
+
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 #else
 
@@ -178,12 +280,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6
                           |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
 
-#endif
+
 
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+#endif
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 }
 

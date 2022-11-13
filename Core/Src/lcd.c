@@ -280,6 +280,57 @@ void DisplayStartScreen(void) {
 	RandChar();
 }
 
+void UpdateLcd(unsigned char *runnerArea, unsigned char jump) {
+
+  for (uint8_t i = 0; i <= 15; i++) {
+	  LCDCursorPos(i, 2);
+	  LCDChar(runnerArea[i]);
+  }
+  LCDCursorPos(1, 1);
+  LCDChar(jump);
+
+}
+
+void PrintScore(unsigned int score){
+
+  LCDCursorPos(4, 1);
+  LCDPrintStr((char*)"Score: ");
+  LCDCursorPos(11, 1);
+  LCDPrintVal(score);
+
+}
+
+void DrawBlock(unsigned char *runnerArea){
+
+  runnerArea[0] = BLOCK;
+  runnerArea[15] = BLOCK;
+
+}
+
+void ShowCrashScreen(unsigned int score, unsigned int *bestScore){
+
+	LCDCursorPos(4, 1);
+	LCDPrintStr((char*)"Game Over!");
+	HAL_Delay(2500);
+
+	LCDCursorPos(4, 1);
+	LCDPrintStr((char*)"Best: ");
+
+	LCDCursorPos(10, 1);
+	LCDPrintStr((char*)"      ");
+
+	LCDCursorPos(10, 1);
+ /* if (EEPROMReadInt(0) <= score) { TODO implementar leitura memória
+	EEPROMWriteInt(0, score);
+  }
+  lcd.print(EEPROMReadInt(0));
+ */
+   if(score > *bestScore){
+	   *bestScore = score;
+   }
+
+   LCDPrintVal(*bestScore);
+}
 /********************************************************************/
 /********************************************************************/
 

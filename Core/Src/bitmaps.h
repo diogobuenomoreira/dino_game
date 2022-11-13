@@ -78,7 +78,7 @@ byte dino[8] = {
   0b00000
 };
 
-byte cacti[8] = {
+byte cactus[8] = {
   0b00100,
   0b00101,
   0b10101,
