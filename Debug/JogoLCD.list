@@ -1218,9 +1218,9 @@ int main(void)
  800089c:	e01b      	b.n	80008d6 <main+0x1b6>
 			  }
 			  else {
-				  buttonPressed = true;//false;
+				  buttonPressed = false;
  800089e:	4b1a      	ldr	r3, [pc, #104]	; (8000908 <main+0x1e8>)
- 80008a0:	2201      	movs	r2, #1
+ 80008a0:	2200      	movs	r2, #0
  80008a2:	701a      	strb	r2, [r3, #0]
 				  ShowCrashScreen(score, &bestScore);
  80008a4:	463b      	mov	r3, r7

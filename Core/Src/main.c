@@ -179,7 +179,7 @@ int main(void)
 				freeze_score = false;
 			  }
 			  else {
-				  buttonPressed = true;//false;
+				  buttonPressed = false;
 				  ShowCrashScreen(score, &bestScore);
 				  while(buttonPressed == false);// Keep in loop until button is pressed again
 				  memset(runnerArea, SPACE, sizeof(runnerArea));// clear runner area
