@@ -65,9 +65,16 @@ static void MX_GPIO_Init(void);
   */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
+#if SIMULATE
   if(GPIO_Pin == GPIO_PIN_5){
 	  buttonPressed = true;
   }
+#else
+  if(GPIO_Pin == GPIO_PIN_8){
+  	  buttonPressed = true;
+  }
+#endif
+
 }
 
 /* USER CODE END 0 */
